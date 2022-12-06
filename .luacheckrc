@@ -38,6 +38,7 @@ globals = {
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
 	"OmniCC",
+	"ElvUI",
 
 	-- WeakAuras
 	"WeakAuras_DropDownMenu",
@@ -4000,6 +4001,7 @@ globals = {
 	"GetMaterialTextColors",
 	"GetMaxUIPanelsWidth",
 	"GetMeleeMissChance",
+	"GetMeleeHaste",
 	"GetMessageTypeColor",
 	"GetMessageTypeState",
 	"GetMoneyString",

@@ -816,28 +816,38 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               if arg.multiConvertKey then
                 v = arg.multiConvertKey(trigger, v)
               end
-              return trigger[realname].multi[v];
+              if v then
+                return trigger[realname].multi[v];
+              end
             end
           end,
           set = function(info, v, calledFromSetAll)
             if arg.multiConvertKey then
               v = arg.multiConvertKey(trigger, v)
             end
-            trigger[realname].multi = trigger[realname].multi or {};
-            if (calledFromSetAll or arg.multiTristate) then
-              trigger[realname].multi[v] = calledFromSetAll;
-            elseif(trigger[realname].multi[v]) then
-              trigger[realname].multi[v] = nil;
-            else
-              trigger[realname].multi[v] = true;
+            if v then
+              trigger[realname].multi = trigger[realname].multi or {};
+              if (calledFromSetAll or arg.multiTristate) then
+                trigger[realname].multi[v] = calledFromSetAll;
+              elseif(trigger[realname].multi[v]) then
+                trigger[realname].multi[v] = nil;
+              else
+                trigger[realname].multi[v] = true;
+              end
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                -- Hack specifally for dragon flight mini talent
+                -- That widget needs to be informed before and
+                -- after a reload
+                OptionsPrivate.Private.callbacks:Fire("BeforeReload")
+                WeakAuras.ClearAndUpdateOptions(data.id)
+                WeakAuras.FillOptions()
+                OptionsPrivate.Private.callbacks:Fire("AfterReload")
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
             end
-            WeakAuras.Add(data);
-            if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
-            end
-            OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
-            OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
